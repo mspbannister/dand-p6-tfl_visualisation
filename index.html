@@ -7,12 +7,29 @@
         rel="stylesheet" 
         href="http://cdn.leafletjs.com/leaflet-0.7/leaflet.css"
     />
-    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <!-- <script src="http://d3js.org/d3.v3.min.js"></script> -->
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
 
     <script
         src="http://cdn.leafletjs.com/leaflet-0.7/leaflet.js">
     </script>
     
+    <style>
+    div.tooltip {
+    	position: absolute;
+    	text-align: center;
+    	width: 120px;
+    	height: 28px;					
+    	padding: 2px;				
+    	font: 12px sans-serif;		
+    	background: lightsteelblue;	
+    	border: 0px;		
+    	border-radius: 8px;			
+    	pointer-events: none;			
+	}
+    </style>
 </head>
 <body>
 
@@ -26,50 +43,87 @@
             '<a href="http://openstreetmap.org">OpenStreetMap</a>';
         L.tileLayer(
             'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; ' + mapLink + ' Contributors',
+            attribution: '&copy; ' + mapLink + ' Contributors; Powered by TfL Open Data; Contains OS data &copy; Crown copyright and database rights 2016',
             maxZoom: 18,
             }).addTo(map);
 				
-	// Adapted from http://bl.ocks.org/d3noob/9267535
-	/* Initialize the SVG layer */
-	map._initPathRoot()    
-
-	// Adapted from http://bl.ocks.org/d3noob/9267535
-	/* We simply pick up the SVG from the map object */
-	var svg = d3.select("#map").select("svg"),
-	g = svg.append("g");
-
-	d3.json("circles.json", function(collection) {
-		/* Add a LatLng object to each item in the dataset */
-		collection.objects.forEach(function(d) {
-			d.LatLng = new L.LatLng(d.circle.coordinates[0],
-									d.circle.coordinates[1])
-		})
-		
 		// Adapted from http://bl.ocks.org/d3noob/9267535
-		var feature = g.selectAll("circle")
-			.data(collection.objects)
-			.enter().append("circle")
-			.style("stroke", "black")  
-			.style("opacity", .6) 
-			.style("fill", "red")
-			.attr("r", 10);  
-		
-		// Adapted from http://bl.ocks.org/d3noob/9267535
-		map.on("viewreset", update);
-		update();
+		/* Initialize the SVG layer */
+		map._initPathRoot()    
 
 		// Adapted from http://bl.ocks.org/d3noob/9267535
-		function update() {
-			feature.attr("transform", 
-			function(d) { 
-				return "translate("+ 
-					map.latLngToLayerPoint(d.LatLng).x +","+ 
-					map.latLngToLayerPoint(d.LatLng).y +")";
-				}
-			)
-		}
-	})			 
-</script>
+		/* We simply pick up the SVG from the map object */
+		var svg = d3.select("#map").select("svg"),
+		g = svg.append("g");
+
+		// Define the div for the tooltip
+		// Adapted from http://bl.ocks.org/d3noob/a22c42db65eb00d4e369
+		var div = d3.select("body").append("div")	
+				    .attr("class", "tooltip")				
+				    .style("opacity", 0);
+
+		d3.csv("March_Cycle_Hire_Summary.csv", function(d) {
+			d.Start_Count = +d.Start_Count;
+			d.LatLng = new L.LatLng(d.Station_Lat,
+								    d.Station_Lon);
+			return d;
+		}, function(data) {
+			
+			// Adapted from Udacity lesson code
+			var count_extent = d3.extent(data, function(d) {
+                return d['Start_Count'];
+            })
+
+            var colorScale = d3.scaleSequential(d3.interpolateReds)
+							   .domain(count_extent);
+			
+			// Adapted from Udacity lesson code
+            var radius = d3.scaleSqrt()
+                           .domain(count_extent)
+                           .range([1,12]);
+
+			// Adapted from http://bl.ocks.org/d3noob/9267535
+			var feature = g.selectAll("circle")
+				.data(data)
+				.enter().append("circle")
+				.style("stroke", "black")  
+				.style("opacity", .9) 
+				.style("fill", function(d) {
+                return colorScale(d.Start_Count);
+               })
+				.attr('r', function(d) {
+                return radius(d.Start_Count);
+               })
+			// Adapted from http://bl.ocks.org/d3noob/a22c42db65eb00d4e369
+				.on("mouseover", function(d) {		
+            		div.transition()		
+                .duration(200)		
+                .style("opacity", .9);		
+            		div.html(d.Station_Name)	
+                .style("left", (d3.event.pageX) + "px")		
+                .style("top", (d3.event.pageY - 28) + "px");	
+            	})					
+        		.on("mouseout", function(d) {		
+            		div.transition()		
+                .duration(500)		
+                .style("opacity", 0);
+            	});
+			
+			// Adapted from http://bl.ocks.org/d3noob/9267535
+			map.on("viewreset", update);
+			update();
+
+			// Adapted from http://bl.ocks.org/d3noob/9267535
+			function update() {
+				feature.attr("transform", 
+				function(d) { 
+					return "translate("+ 
+						map.latLngToLayerPoint(d.LatLng).x +","+ 
+						map.latLngToLayerPoint(d.LatLng).y +")";
+					}
+				)
+			}
+		})			 
+	</script>
 </body>
 </html>

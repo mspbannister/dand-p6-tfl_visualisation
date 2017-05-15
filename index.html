@@ -7,7 +7,7 @@
         rel="stylesheet" 
         href="http://cdn.leafletjs.com/leaflet-0.7/leaflet.css"
     />
-    <!-- <script src="http://d3js.org/d3.v3.min.js"></script> -->
+
     <script src="https://d3js.org/d3.v4.min.js"></script>
 
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
@@ -30,8 +30,6 @@
     	pointer-events: none;			
 	}
     </style>
-</head>
-<body>
 
 	<div id="map" style="width: 1125px; height: 750px"></div>
 
@@ -43,7 +41,9 @@
             '<a href="http://openstreetmap.org">OpenStreetMap</a>';
         L.tileLayer(
             'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; ' + mapLink + ' Contributors; Powered by TfL Open Data; Contains OS data &copy; Crown copyright and database rights 2016',
+            attribution: '&copy; ' + mapLink + ' Contributors; Powered ' +
+            			  'by TfL Open Data; Contains OS data &copy; ' +
+            			  'Crown copyright and database rights 2016',
             maxZoom: 18,
             }).addTo(map);
 				
@@ -52,7 +52,6 @@
 		map._initPathRoot()    
 
 		// Adapted from http://bl.ocks.org/d3noob/9267535
-		/* We simply pick up the SVG from the map object */
 		var svg = d3.select("#map").select("svg"),
 		g = svg.append("g");
 
@@ -62,34 +61,36 @@
 				    .attr("class", "tooltip")				
 				    .style("opacity", 0);
 
-		d3.csv("March_Cycle_Hire_Summary.csv", function(d) {
-			d.Start_Count = +d.Start_Count;
-			d.LatLng = new L.LatLng(d.Station_Lat,
-								    d.Station_Lon);
-			return d;
-		}, function(data) {
+		function plot_points(data) {
 			
 			// Adapted from Udacity lesson code
 			var count_extent = d3.extent(data, function(d) {
                 return d['Start_Count'];
             })
 
-            var colorScale = d3.scaleSequential(d3.interpolateReds)
-							   .domain(count_extent);
+            // Set colour scale
+            var colorScale = d3.scaleSequential(d3.interpolateReds);
+							   
+			// Limit color scale input to improve legibility
+			var c = d3.scaleLinear()
+					  .domain(count_extent)
+					  .range([0, 1.0]);
 			
 			// Adapted from Udacity lesson code
             var radius = d3.scaleSqrt()
                            .domain(count_extent)
-                           .range([1,12]);
+                           .range([4,8]);
 
 			// Adapted from http://bl.ocks.org/d3noob/9267535
 			var feature = g.selectAll("circle")
-				.data(data)
+				.data(data.sort(function(a, b) { 
+                  	return b.Start_Count - a.Start_Count;
+                 }))
 				.enter().append("circle")
 				.style("stroke", "black")  
-				.style("opacity", .9) 
+				.style("opacity", .7) 
 				.style("fill", function(d) {
-                return colorScale(d.Start_Count);
+                return colorScale(c(d.Start_Count));
                })
 				.attr('r', function(d) {
                 return radius(d.Start_Count);
@@ -98,7 +99,7 @@
 				.on("mouseover", function(d) {		
             		div.transition()		
                 .duration(200)		
-                .style("opacity", .9);		
+                .style("opacity", 0.9);		
             		div.html(d.Station_Name)	
                 .style("left", (d3.event.pageX) + "px")		
                 .style("top", (d3.event.pageY - 28) + "px");	
@@ -123,7 +124,17 @@
 					}
 				)
 			}
-		})			 
+		};	 
+	</script>
+</head>
+<body>
+	<script type="text/javascript">
+		d3.csv("March_Cycle_Hire_Summary.csv", function(d) {
+			// d.Start_Count = +d.Start_Count;
+			d.LatLng = new L.LatLng(d.Station_Lat,
+								    d.Station_Lon);
+			return d;
+		}, plot_points);
 	</script>
 </body>
 </html>

@@ -76,7 +76,7 @@
 			
 			// Adapted from Udacity lesson code
 			var count_extent = d3.extent(data, function(d) {
-        return d['Start_Count'];
+        return d['Total'];
       })
 
       // Set colour scale
@@ -97,13 +97,13 @@
 											 .attr("class", "bubble")
 											 .selectAll("circle")
 										 	 .data(data.sort(function(a, b) { 
-                  	 		return b.Start_Count - a.Start_Count;
+                  	 		return b.Total - a.Total;
       							 	 }))
 										 	 .enter().append("circle")
 										 	 .style("stroke", "black")  
 										 	 .style("opacity", .7) 
 										 	 .style("fill", colorScale(0.5))
-										 	 .attr("r", 6)
+										 	 .attr('r', 6)
 			// Adapted from http://bl.ocks.org/d3noob/a22c42db65eb00d4e369
 										 	 .on("mouseover", function(d) {		
             				 		div.transition()		
@@ -145,7 +145,7 @@
                });
 			};
 
-    	var inputs = ['Start_Count', 'End_Count'];
+    	var inputs = ['Total', 'Weekday', 'Weekend'];
 
     	var buttons = d3.select("body")
                     	.append("div")

@@ -29,87 +29,96 @@
     	border-radius: 8px;			
     	pointer-events: none;			
 	}
+
+	div.input_buttons {
+        position: fixed;
+        top: 10px;
+        left: 1030px;
+      }
+
+      div.input_buttons div {
+        background-color: rgb(251, 201, 127);
+        padding: 3px;
+        margin: 7px;
+      }
     </style>
 
 	<div id="map" style="width: 1125px; height: 750px"></div>
 
 	<script type="text/javascript">
 	
-        // Adapted from http://bl.ocks.org/d3noob/9267535
-        var map = L.map('map').setView([51.51, -0.11], 12);
-        mapLink = 
-            '<a href="http://openstreetmap.org">OpenStreetMap</a>';
-        L.tileLayer(
-            'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; ' + mapLink + ' Contributors; Powered ' +
-            			  'by TfL Open Data; Contains OS data &copy; ' +
-            			  'Crown copyright and database rights 2016',
-            maxZoom: 18,
-            }).addTo(map);
+    // Adapted from http://bl.ocks.org/d3noob/9267535
+    var map = L.map('map').setView([51.51, -0.11], 12);
+    mapLink = 
+        '<a href="http://openstreetmap.org">OpenStreetMap</a>';
+    L.tileLayer(
+        'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; ' + mapLink + ' Contributors; Powered ' +
+        			  'by TfL Open Data; Contains OS data &copy; ' +
+        			  'Crown copyright and database rights 2016',
+        maxZoom: 18,
+        }).addTo(map);
 				
 		// Adapted from http://bl.ocks.org/d3noob/9267535
 		/* Initialize the SVG layer */
 		map._initPathRoot()    
 
 		// Adapted from http://bl.ocks.org/d3noob/9267535
-		var svg = d3.select("#map").select("svg"),
-		g = svg.append("g");
+		var svg = d3.select("#map").select("svg");
 
 		// Define the div for the tooltip
 		// Adapted from http://bl.ocks.org/d3noob/a22c42db65eb00d4e369
 		var div = d3.select("body").append("div")	
-				    .attr("class", "tooltip")				
-				    .style("opacity", 0);
+				    		.attr("class", "tooltip")				
+				    		.style("opacity", 0);
 
 		function plot_points(data) {
 			
 			// Adapted from Udacity lesson code
 			var count_extent = d3.extent(data, function(d) {
-                return d['Start_Count'];
-            })
+        return d['Start_Count'];
+      })
 
-            // Set colour scale
-            var colorScale = d3.scaleSequential(d3.interpolateReds);
+      // Set colour scale
+      var colorScale = d3.scaleSequential(d3.interpolatePurples);
 							   
 			// Limit color scale input to improve legibility
 			var c = d3.scaleLinear()
-					  .domain(count_extent)
-					  .range([0, 1.0]);
+					  		.domain(count_extent)
+							  .range([0, 1.0]);
 			
 			// Adapted from Udacity lesson code
-            var radius = d3.scaleSqrt()
-                           .domain(count_extent)
-                           .range([4,8]);
+      var radius = d3.scaleSqrt()
+                     .domain(count_extent)
+                     .range([4,8]);
 
 			// Adapted from http://bl.ocks.org/d3noob/9267535
-			var feature = g.selectAll("circle")
-				.data(data.sort(function(a, b) { 
-                  	return b.Start_Count - a.Start_Count;
-                 }))
-				.enter().append("circle")
-				.style("stroke", "black")  
-				.style("opacity", .7) 
-				.style("fill", function(d) {
-                return colorScale(c(d.Start_Count));
-               })
-				.attr('r', function(d) {
-                return radius(d.Start_Count);
-               })
+			var feature = svg.append('g')
+											 .attr("class", "bubble")
+											 .selectAll("circle")
+										 	 .data(data.sort(function(a, b) { 
+                  	 		return b.Start_Count - a.Start_Count;
+      							 	 }))
+										 	 .enter().append("circle")
+										 	 .style("stroke", "black")  
+										 	 .style("opacity", .7) 
+										 	 .style("fill", colorScale(0.5))
+										 	 .attr("r", 6)
 			// Adapted from http://bl.ocks.org/d3noob/a22c42db65eb00d4e369
-				.on("mouseover", function(d) {		
-            		div.transition()		
-                .duration(200)		
-                .style("opacity", 0.9);		
-            		div.html(d.Station_Name)	
-                .style("left", (d3.event.pageX) + "px")		
-                .style("top", (d3.event.pageY - 28) + "px");	
-            	})					
-        		.on("mouseout", function(d) {		
-            		div.transition()		
-                .duration(500)		
-                .style("opacity", 0);
-            	});
-			
+										 	 .on("mouseover", function(d) {		
+            				 		div.transition()		
+                				 	 .duration(200)		
+                				 	 .style("opacity", 0.9);		
+            						div.html(d.Station_Name)	
+                				 	 .style("left", (d3.event.pageX) + "px")		
+                				 	 .style("top", (d3.event.pageY - 28) + "px");	
+            					 })					
+				        		 	 .on("mouseout", function(d) {		
+				            		div.transition()		
+				                 	 .duration(500)		
+				                 	 .style("opacity", 0);
+				            	 });
+
 			// Adapted from http://bl.ocks.org/d3noob/9267535
 			map.on("viewreset", update);
 			update();
@@ -123,7 +132,48 @@
 						map.latLngToLayerPoint(d.LatLng).y +")";
 					}
 				)
-			}
+			};
+
+			function update_points(input) {
+				feature.transition()
+							 .duration(500)
+							 .style("fill", function(d) {
+                		 		return colorScale(c(d[input]));
+               				 })
+							 .attr('r', function(d) {
+               	return radius(d[input]);
+               });
+			};
+
+    	var inputs = ['Start_Count', 'End_Count'];
+
+    	var buttons = d3.select("body")
+                    	.append("div")
+                    	.attr("class", "input_buttons")
+                   		.selectAll("div")
+                    	.data(inputs)
+                			.enter()
+                    	.append("div")
+                    	.text(function(d) {
+                        return d;
+                    	});
+
+      buttons.on("click", function(d) {
+        d3.select(".input_buttons")
+          .selectAll("div")
+          .transition()
+          .duration(500)
+          .style("color", "black")
+          .style("background", "rgb(251, 201, 127)");
+
+       	d3.select(this)
+          .transition()
+          .duration(500)
+          .style("background", "lightBlue")
+          .style("color", "white");
+        update_points(d);
+      });
+
 		};	 
 	</script>
 </head>

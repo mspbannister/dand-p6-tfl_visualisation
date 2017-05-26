@@ -26,7 +26,7 @@
     div.tooltip {
 	    	position: absolute;
 	    	text-align: center;
-	    	width: 120px;
+	    	width: 125px;
 	    	min-height: 28px;
 	    	max-height: 80px;			
 	    	padding: 2px;				
@@ -91,7 +91,7 @@
 			
 				// Adapted from Udacity lesson code
 				var count_extent = d3.extent(data, function(d) {
-		      	return d["Total"]; 
+		      	return d.Overall; 
 	      })
 
 	      var colorScale = d3.scaleSequential(d3.interpolatePurples);
@@ -110,7 +110,7 @@
 												 .attr("class", "bubble")
 												 .selectAll("circle")
 											 	 .data(data.sort(function(a, b) { 
-	                  	 	 		 return b.Total - a.Total;
+	                  	 	 		 return b.Overall - a.Overall;
 	      							 	 }))
 											 	 .enter().append("circle")
 											 	 .style("stroke", "black")  
@@ -122,7 +122,7 @@
 		            				 		 div.transition()		
 		                						.duration(200)		
 		                				 		.style("opacity", 0.9);		
-		            						 div.html(d.Station_Name)	
+		            						 div.html("<b>" + d.Station_Name + "</b>")	
 		                				 		.style("left", (d3.event.pageX) + "px")		
 		                				 		.style("top", (d3.event.pageY - 37) + "px");
 	            					 })					
@@ -159,7 +159,9 @@
 	  				 		div.transition()		
 	      			 		 .duration(200)		
 	      				 	 .style("opacity", 0.9);		
-	  						div.html(d.Station_Name + "<br>" + "Avg. hires: " + d[input])	
+	  						div.html("<b>" + d.Station_Name + "</b><br>" +
+	  								"<i>Avg. daily hires: " + d3.format(".1f")(d[input]) + 
+	  								"</i>")
 	      				 	 .style("left", (d3.event.pageX) + "px")		
 	      				 	 .style("top", (d3.event.pageY - 37) + "px");
 						 })					
@@ -170,7 +172,7 @@
 	        	 });
 				};
 
-	    	var inputs = ["Total", "Weekday", "Weekend"];
+	    	var inputs = ["Overall", "Weekday", "Weekend"];
 
 	    	var buttons = d3.select("body")
 	                    	.append("div")
@@ -204,6 +206,7 @@
 <body>
 	<script type="text/javascript">
 		d3.csv("March_Cycle_Hire_Summary.csv", function(d) {
+				// d.Weekend = 
 				d.LatLng = new L.LatLng(d.Station_Lat, d.Station_Lon);
 				return d;
 		}, plot_points);

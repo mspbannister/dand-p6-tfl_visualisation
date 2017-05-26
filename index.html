@@ -53,7 +53,6 @@
 	      padding: 4px;
 	      margin: 0px;
     }
-
   </style>
 
 	<h2>London Cycle Hire Stations by Average Daily Hires</h2>
@@ -61,7 +60,6 @@
 	<div id="map" style="width: 1125px; height: 700px"></div>
 
 	<script type="text/javascript">
-	
     /* Set map using Leaflet, including coordinates and zoom */
     // Adapted from http://bl.ocks.org/d3noob/9267535
     var map = L.map("map").setView([51.51, -0.11], 12);
@@ -89,7 +87,6 @@
 
 		function plot_points(data) {
 			
-				// Adapted from Udacity lesson code
 				var count_extent = d3.extent(data, function(d) {
 		      	return d.Overall; 
 	      })
@@ -132,7 +129,7 @@
 						                 	  .style("opacity", 0);
 					            	 });
 
-				/* Ensure bubbles remain on viewreset (e.g. increasing zoom) */
+				/* Ensure bubbles remain on viewreset (e.g. when increasing zoom) */
 				// Adapted from http://bl.ocks.org/d3noob/9267535
 				map.on("viewreset", update);
 				update();
@@ -155,6 +152,7 @@
 									 .attr("r", function(d) {
 		               		 return radius(d[input]);
 		               });
+
 	          feature.on("mouseover", function(d) {		
 	  				 		div.transition()		
 	      			 		 .duration(200)		
@@ -174,6 +172,7 @@
 
 	    	var inputs = ["Overall", "Weekday", "Weekend"];
 
+	    	// Adapted from Udacity lesson code
 	    	var buttons = d3.select("body")
 	                    	.append("div")
 	                    	.attr("class", "input_buttons")
@@ -205,8 +204,8 @@
 </head>
 <body>
 	<script type="text/javascript">
+		/* Load data, parse latitude/longitude and run plot_points function */
 		d3.csv("March_Cycle_Hire_Summary.csv", function(d) {
-				// d.Weekend = 
 				d.LatLng = new L.LatLng(d.Station_Lat, d.Station_Lon);
 				return d;
 		}, plot_points);

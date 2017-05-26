@@ -9,22 +9,22 @@ As a regular user of London's cycle hire scheme, I know how frustrating it can b
 
 ## Design
 
-*Chart type*  
+### Chart type
 I decided at the outset that I wanted to plot each station on an interactive map, rather than using a fixed image of London, for two reasons:
 - There are over 750 bike docking stations spread over a large area within central London. Plotting these all at once causes a lot of overlap, which is alleviated when the user zooms in on specific areas; and  
 - I wanted fellow bike scheme users to be able to zoom in on their local hire station to see how it compared with others nearby, rather than trying to gauge it from a distance.
 
-*Data*  
+### Data
 I noticed that cycle hire patterns were significantly different on weekdays and weekends, which may reflect the different patterns of commmuter vs. leisure usage. I designed the visualisation to allow these different patterns to be viewed separately, accessible through the buttons on the upper right of the graphic. 
 
 I designed the buttons themselves to match the map's native zoom buttons as closely as possible, to ensure the viewer intuitively understood these were clickable objects. The buttons change colour to denote the selected option, with the purple hue reflecting the colour of the bubble markers.
 
-*Markers*  
+### Markers
 I used bubble markers for each station because they allow additional information (in this case average daily cycle hires) to be clearly encoded through attributes like size and colour. Initially I planned only to encode the data using bubble size, but after receiving feedback from a friend, I decided to use double encoding (combining size with colour saturation) to make the patterns easier to see.
 
 Another friend felt that my original colour scheme, red, was too aggressive, and that it made her not want to explore the data further. After experimenting with a few alternatives, I settled on purple because (unlike blue or green) it does not appear elsewhere on the map, reducing the potential for visual confusion.
 
-*Labels*  
+### Labels
 Rather than include a legend, which can be difficult to interpret accurately for these relatively small and similarly sized circles (with radii of 4-9 pixels), I decided to annotate each bubble with a tooltip. As the user moves the mouse over a station, they are shown the station name and average daily cycle hires for the chosen data (i.e. Overall, Weekdays or Weekends).
 
 ## Conclusion

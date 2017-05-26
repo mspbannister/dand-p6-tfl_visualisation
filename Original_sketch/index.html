@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Mapping London cycle hire points with D3</title>
+
+    <link 
+        rel="stylesheet" 
+        href="http://cdn.leafletjs.com/leaflet-0.7/leaflet.css"
+    />
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+
+    <script
+        src="http://cdn.leafletjs.com/leaflet-0.7/leaflet.js">
+    </script>
+    
+</head>
+<body>
+
+	<div id="map" style="width: 1125px; height: 750px"></div>
+
+	<script type="text/javascript">
+	
+        // Adapted from http://bl.ocks.org/d3noob/9267535
+        var map = L.map('map').setView([51.51, -0.11], 12);
+        mapLink = 
+            '<a href="http://openstreetmap.org">OpenStreetMap</a>';
+        L.tileLayer(
+            'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; ' + mapLink + ' Contributors',
+            maxZoom: 18,
+            }).addTo(map);
+				
+	// Adapted from http://bl.ocks.org/d3noob/9267535
+	/* Initialize the SVG layer */
+	map._initPathRoot()    
+
+	// Adapted from http://bl.ocks.org/d3noob/9267535
+	/* We simply pick up the SVG from the map object */
+	var svg = d3.select("#map").select("svg"),
+	g = svg.append("g");
+
+	d3.json("circles.json", function(collection) {
+		/* Add a LatLng object to each item in the dataset */
+		collection.objects.forEach(function(d) {
+			d.LatLng = new L.LatLng(d.circle.coordinates[0],
+									d.circle.coordinates[1])
+		})
+		
+		// Adapted from http://bl.ocks.org/d3noob/9267535
+		var feature = g.selectAll("circle")
+			.data(collection.objects)
+			.enter().append("circle")
+			.style("stroke", "black")  
+			.style("opacity", .6) 
+			.style("fill", "red")
+			.attr("r", 10);  
+		
+		// Adapted from http://bl.ocks.org/d3noob/9267535
+		map.on("viewreset", update);
+		update();
+
+		// Adapted from http://bl.ocks.org/d3noob/9267535
+		function update() {
+			feature.attr("transform", 
+			function(d) { 
+				return "translate("+ 
+					map.latLngToLayerPoint(d.LatLng).x +","+ 
+					map.latLngToLayerPoint(d.LatLng).y +")";
+				}
+			)
+		}
+	})			 
+</script>
+</body>
+</html>

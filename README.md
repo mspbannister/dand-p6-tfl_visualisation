@@ -17,7 +17,7 @@ I decided at the outset that I wanted to plot each station on an interactive map
 ### Data
 I noticed that cycle hire patterns were significantly different on weekdays and weekends, which may reflect the different patterns of commmuter vs. leisure usage. I designed the visualisation to allow these different patterns to be viewed separately, accessible through the buttons on the upper right of the graphic. 
 
-I designed the buttons themselves to match the map's native zoom buttons as closely as possible, to ensure the viewer intuitively understood these were clickable objects. The buttons change colour to denote the selected option, with the purple hue reflecting the colour of the bubble markers.
+I designed the buttons themselves to match the map's native zoom buttons as closely as possible, to ensure the viewer intuitively understood these were clickable objects. The buttons change colour to denote the selected option, with the purple hue reflecting the colour of the bubble markers. On the advice of a friend, I changed the default cursor style to 'pointer', which emphasises that the buttons are meant to be clicked.
 
 ### Markers
 I used bubble markers for each station because they allow additional information (in this case average daily cycle hires) to be clearly encoded through attributes like size and colour. Initially I planned only to encode the data using bubble size, but after receiving feedback from a friend, I decided to use double encoding (combining size with colour saturation) to make the patterns easier to see.
@@ -26,6 +26,14 @@ Another friend felt that my original colour scheme, red, was too aggressive, and
 
 ### Labels
 Rather than include a legend, which can be difficult to interpret accurately for these relatively small and similarly sized circles (with radii of 4-9 pixels), I decided to annotate each bubble with a tooltip. As the user moves the mouse over a station, they are shown the station name and average daily cycle hires for the chosen data (i.e. Overall, Weekdays or Weekends).
+
+## Feedback
+
+As part of the development process, I solicited feedback from friends and family on my evolving visualisation. This can be summarised as follows:
+
+1. Advised to encode bike hire data in both colour and size (not just size).
+2. Advised that the red colour scheme is too aggressive.
+3. Advised that the default cursor when hovering over the buttons (text style) meant that clicking them wasn't intuitive. 
 
 ## Conclusion
 
@@ -42,3 +50,11 @@ In creating this visualisation, I used the following resources:
 - http://leafletjs.com/examples/quick-start/  
 - https://github.com/d3/d3-scale-chromatic  
 - https://github.com/d3/d3/blob/master/CHANGES.md#scales-d3-scale  
+
+## List of files
+- 'index.html': HTML/CSS/Javascript code that produces an interactive D3 visualisation  
+- 'March_Cycle_Hire_Summary.csv': Summary TfL bike data for 1-28 March 2017  
+- 'Prepare_TfL_bike_data.py': Python script to clean and summarise the underlying TfL data  
+- 'Data_README.md': Additional information on the underlying data
+
+Original 

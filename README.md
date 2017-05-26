@@ -57,4 +57,6 @@ In creating this visualisation, I used the following resources:
 - 'Prepare_TfL_bike_data.py': Python script to clean and summarise the underlying TfL data  
 - 'Data_README.md': Additional information on the underlying data
 
-Original 
+Original_sketch:
+- 'index0.html': Original coded sketch of what I planned to achieve with my visualisation
+- 'circles.json': Coordinates of all TfL bike hire stations

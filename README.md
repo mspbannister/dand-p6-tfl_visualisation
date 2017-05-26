@@ -15,9 +15,9 @@ I decided at the outset that I wanted to plot each station on an interactive map
 - I wanted fellow bike scheme users to be able to zoom in on their local hire station to see how it compared with others nearby, rather than trying to gauge it from a distance.
 
 ### Data
-I noticed that cycle hire patterns were significantly different on weekdays and weekends, which may reflect the different patterns of commmuter vs. leisure usage. I designed the visualisation to allow these different patterns to be viewed separately, accessible through the buttons on the upper right of the graphic. 
+I noticed that cycle hire patterns were significantly different on weekdays and weekends, which may reflect the different patterns of commmuter vs. leisure usage. I designed the visualisation to allow these patterns to be viewed separately, accessible through the buttons on the upper right of the graphic. 
 
-I designed the buttons themselves to match the map's native zoom buttons as closely as possible, to ensure the viewer intuitively understood these were clickable objects. The buttons change colour to denote the selected option, with the purple hue reflecting the colour of the bubble markers. On the advice of a friend, I changed the default cursor style to 'pointer', which emphasises that the buttons are meant to be clicked.
+I designed the buttons themselves to match the map's native zoom buttons as closely as possible, to ensure the viewer intuitively understood these were clickable objects. The buttons change colour to denote the selected option, with the purple hue reflecting the colour of the bubble markers. Acting on the advice of a friend, I changed the cursor style to 'pointer', which emphasises that the buttons are meant to be clicked.
 
 ### Markers
 I used bubble markers for each station because they allow additional information (in this case average daily cycle hires) to be clearly encoded through attributes like size and colour. Initially I planned only to encode the data using bubble size, but after receiving feedback from a friend, I decided to use double encoding (combining size with colour saturation) to make the patterns easier to see.
@@ -57,6 +57,6 @@ In creating this visualisation, I used the following resources:
 - 'Prepare_TfL_bike_data.py': Python script to clean and summarise the underlying TfL data  
 - 'Data_README.md': Additional information on the underlying data
 
-Original_sketch:
+Original_sketch folder:
 - 'index0.html': Original coded sketch of what I planned to achieve with my visualisation
 - 'circles.json': Coordinates of all TfL bike hire stations

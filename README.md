@@ -40,6 +40,6 @@ In creating this visualisation, I used the following resources:
 - http://bl.ocks.org/d3noob/9267535  
 - http://bl.ocks.org/d3noob/a22c42db65eb00d4e369  
 - http://leafletjs.com/examples/quick-start/  
-- http://stackoverflow.com/questions/17671252/  d3-create-a-continuous-color-scale-with-many-strings-inputs-for-the-range-and-d  
+- [https://stackoverflow.com/questions/17671252/d3-create-a-continuous-color-scale-with-many-strings-inputs-for-the-range-and-d](https://stackoverflow.com/questions/17671252/d3-create-a-continuous-color-scale-with-many-strings-inputs-for-the-range-and-d)
 - https://github.com/d3/d3-scale-chromatic  
 - https://github.com/d3/d3/blob/master/CHANGES.md#scales-d3-scale  

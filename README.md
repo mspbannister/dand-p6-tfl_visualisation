@@ -5,7 +5,7 @@ This is my submission for Project 6 ('Make Effective Data Visualisation') on Uda
 
 ## Summary 
 
-As a regular user of London's cycle hire scheme, I know how frustrating it can be to arrive at a hire station and find there are no bikes left. This visualisation plots every docking station on an interactive map, with the relative number of average daily bike hires indicated by the station's size and colour saturation (based on data from 1-28 March 2017). As well as giving users a guide as to which stations to avoid on weekdays and weekends, the visualisation hints at commmuter and leisure trends in London: on weekdays the busiest stations can be found in the centre - near train stations and key commercial districts. On weekends, the number of bikes hired in these areas fall, while hires in park areas increase significantly.
+As a regular user of [London's cycle hire scheme](https://tfl.gov.uk/modes/cycling/santander-cycles), I know how frustrating it can be to arrive at a hire station and find there are no bikes left. This visualisation plots every hire station on an interactive map, with the relative number of average daily bike hires indicated by the station's size and colour saturation (based on data from 1-28 March 2017). As well as giving users a guide as to which stations to avoid on weekdays and weekends, the visualisation hints at commmuter and leisure trends in London: on weekdays the busiest stations can be found in the centre - near train stations and key commercial districts. On weekends, the number of bikes hired in these areas fall, while hires in park areas increase significantly.
 
 ## Design
 
@@ -29,7 +29,7 @@ Rather than include a legend, which can be difficult to interpret accurately for
 
 ## Conclusion
 
-I am satisfied that this visualisation accomplishes what I set out to achieve with it. I would be interested in improving it further by adding additional options, for example adding lines between stations to represent the most popular journeys.
+This visualisation satisfies both the project brief and my original objectives in designing it. To improve it further, I would be interested in adding additional data options, for example adding lines between stations to represent the most popular journeys.
 
 ## Resources
 

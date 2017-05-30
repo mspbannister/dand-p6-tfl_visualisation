@@ -3,6 +3,8 @@ Udacity DAND Project 6 - Make Effective Data Visualisation
 
 This is my submission for Project 6 ('Make Effective Data Visualisation') on Udacity's Data Analyst Nanodegree. The project brief asked the student to create a data visualisation from a data set that tells a story or highlights trends or patterns in the data, using either dimple.js or d3.js.
 
+Note: a live version of this visualisation can be found [here](http://bl.ocks.org/mspbannister/2af66575dcfbd9778a46beb3a6173fc0).
+
 ## Summary 
 
 As a regular user of [London's cycle hire scheme](https://tfl.gov.uk/modes/cycling/santander-cycles), I know how frustrating it can be to arrive at a hire station and find there are no bikes left. This visualisation plots every hire station on an interactive map, with the relative number of average daily bike hires indicated by the station's size and colour saturation (based on data from 1-28 March 2017). As well as giving users a guide as to which stations to avoid on weekdays and weekends, the visualisation hints at commmuter and leisure trends in London: on weekdays the busiest stations can be found in the centre - near train stations and key commercial districts. On weekends, the number of bikes hired in these areas fall, while hires in park areas increase significantly.

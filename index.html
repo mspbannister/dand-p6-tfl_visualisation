@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Mapping London Cycle Hire Stations with D3</title>
+  <title>Mapping London Cycle Hire Stations with D3</title>
 
-  <link 
-      rel="stylesheet" 
+  <link
+      rel="stylesheet"
       href="http://cdn.leafletjs.com/leaflet-0.7/leaflet.css"
   />
 
@@ -14,201 +14,201 @@
     
   <style>
     h2 {
-        text-align: center;
-        color: black;
-        font: 24px sans-serif;	
-      }
+      text-align: center;
+      color: black;
+      font: 24px sans-serif;
+    }
 
     #map {
-    		margin: auto;
+      margin: auto;
     }
 
     div.tooltip {
-	    	position: absolute;
-	    	text-align: center;
-	    	width: 125px;
-	    	min-height: 28px;
-	    	max-height: 80px;			
-	    	padding: 2px;				
-	    	font: 12px sans-serif;		
-	    	background: lightsteelblue;
-	    	border: 1px black;		
-	    	border-radius: 8px;			
-	    	pointer-events: none;			
+	    position: absolute;
+	    text-align: center;
+	    width: 125px;
+	    min-height: 28px;
+	    max-height: 80px;
+	    padding: 2px;
+	    font: 12px sans-serif;
+	    background: lightsteelblue;
+	    border: 1px black;
+	    border-radius: 8px;
+	    pointer-events: none;
 		}
 
 		div.input_buttons {
-	      position: absolute;
-	      top: 77px;
-	      left: 1210px;
+	    position: absolute;
+	    top: 77px;
+	    left: 1210px;
     }
 
     div.input_buttons div {
-	      text-align: center;
-	      font: 13px sans-serif;
-	      border: 1px solid #ccc;
-	      border-radius: 4px;
-	      cursor: pointer;
-	      background: #fff;
-	      padding: 4px;
-	      margin: 0px;
+	    text-align: center;
+	    font: 13px sans-serif;
+	    border: 1px solid #ccc;
+	    border-radius: 4px;
+	    cursor: pointer;
+	    background: #fff;
+	    padding: 4px;
+	    margin: 0px;
     }
   </style>
 
-	<h2>London Cycle Hire Stations by Average Daily Hires</h2>
+  <h2>London Cycle Hire Stations by Average Daily Hires</h2>
 
-	<div id="map" style="width: 1125px; height: 700px"></div>
+  <div id="map" style="width: 1125px; height: 700px"></div>
 
-	<script type="text/javascript">
+  <script type="text/javascript">
     /* Set map using Leaflet, including coordinates and zoom */
     // Adapted from http://bl.ocks.org/d3noob/9267535
     var map = L.map("map").setView([51.51, -0.11], 12);
     mapLink = 
 	      '<a href="http://openstreetmap.org">OpenStreetMap</a>';
     L.tileLayer(
-	      "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-	      attribution: "&copy; " + mapLink + " Contributors; Powered " +
-	      			  "by TfL Open Data; Contains OS data &copy; " +
-	      			  "Crown copyright and database rights 2016",
-	      maxZoom: 18,
-	      }).addTo(map);
-				
-		/* Initialize the SVG layer */
-		// Adapted from http://bl.ocks.org/d3noob/9267535
-		map._initPathRoot()    
+        "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "&copy; " + mapLink + " Contributors; Powered " +
+          "by TfL Open Data; Contains OS data &copy; " +
+          "Crown copyright and database rights 2016",
+        maxZoom: 18,
+        }).addTo(map);
 
-		var svg = d3.select("#map").select("svg");
+    /* Initialize the SVG layer */
+    // Adapted from http://bl.ocks.org/d3noob/9267535
+    map._initPathRoot();
 
-		/* Define the tooltip div */
-		// Adapted from http://bl.ocks.org/d3noob/a22c42db65eb00d4e369
-		var div = d3.select("body").append("div")	
-				    		.attr("class", "tooltip")				
-				    		.style("opacity", 0);
+    var svg = d3.select("#map").select("svg");
 
-		function plot_points(data) {
-			
-				var count_extent = d3.extent(data, function(d) {
-		      	return d.Overall; 
-	      })
+    /* Define the tooltip div */
+    // Adapted from http://bl.ocks.org/d3noob/a22c42db65eb00d4e369
+    var div = d3.select("body").append("div")
+                .attr("class", "tooltip")
+                .style("opacity", 0);
 
-	      var colorScale = d3.scaleSequential(d3.interpolatePurples);
-				
-				var c = d3.scaleLinear()
-						  		.domain(count_extent)
-								  .range([0, 1.0]);
-				
-	      var radius = d3.scaleSqrt()
-	                     .domain(count_extent)
-	                     .range([4,9]);
+    function plot_points(data) {
 
-				/* Add bubbles, sorted to aid visibility */
-				// Adapted from http://bl.ocks.org/d3noob/9267535
-				var feature = svg.append("g")
-												 .attr("class", "bubble")
-												 .selectAll("circle")
-											 	 .data(data.sort(function(a, b) { 
-	                  	 	 		 return b.Overall - a.Overall;
-	      							 	 }))
-											 	 .enter().append("circle")
-											 	 .style("stroke", "black")  
-											 	 .style("opacity", .7) 
-											 	 .style("fill", colorScale(0.5))
-											 	 .attr("r", 6.5)
-				// Adapted from http://bl.ocks.org/d3noob/a22c42db65eb00d4e369
-											 	 .on("mouseover", function(d) {		
-		            				 		 div.transition()		
-		                						.duration(200)		
-		                				 		.style("opacity", 0.9);		
-		            						 div.html("<b>" + d.Station_Name + "</b>")	
-		                				 		.style("left", (d3.event.pageX) + "px")		
-		                				 		.style("top", (d3.event.pageY - 37) + "px");
-	            					 })					
-					        		 	 .on("mouseout", function(d) {		
-						                 div.transition()		
-						                 	  .duration(400)		
-						                 	  .style("opacity", 0);
-					            	 });
+      var count_extent = d3.extent(data, function(d) {
+		    return d.Overall;
+      })
 
-				/* Ensure bubbles remain on viewreset (e.g. when increasing zoom) */
-				// Adapted from http://bl.ocks.org/d3noob/9267535
-				map.on("viewreset", update);
-				update();
+      var colorScale = d3.scaleSequential(d3.interpolatePurples);
 
-				function update() {
-						feature.attr("transform", function(d) { 
-								return "translate("+ 
-								map.latLngToLayerPoint(d.LatLng).x +","+ 
-								map.latLngToLayerPoint(d.LatLng).y +")";
-						})
-				};
+      var c = d3.scaleLinear()
+                .domain(count_extent)
+                .range([0, 1.0]);
 
-				/* Update bubbles and tooltips with buttons */
-				function update_points(input) {
-						feature.transition()
-									 .duration(500)
-									 .style("fill", function(d) {
-		          		 		 return colorScale(c(d[input]));
-		       				 })
-									 .attr("r", function(d) {
-		               		 return radius(d[input]);
-		               });
+      var radius = d3.scaleSqrt()
+                     .domain(count_extent)
+                     .range([4,9]);
 
-	          feature.on("mouseover", function(d) {		
-	  				 		div.transition()		
-	      			 		 .duration(200)		
-	      				 	 .style("opacity", 0.9);		
-	  						div.html("<b>" + d.Station_Name + "</b><br>" +
-	  								"<i>Avg. daily hires: " + d3.format(".1f")(d[input]) + 
-	  								"</i>")
-	      				 	 .style("left", (d3.event.pageX) + "px")		
-	      				 	 .style("top", (d3.event.pageY - 37) + "px");
-						 })					
-	    		 	 .on("mouseout", function(d) {		
-	               div.transition()		
-	               	  .duration(400)		
-	               	  .style("opacity", 0);
-	        	 });
-				};
+      /* Add bubbles, sorted to aid visibility */
+      // Adapted from http://bl.ocks.org/d3noob/9267535 and
+      // http://bl.ocks.org/d3noob/a22c42db65eb00d4e369
+      var feature = svg.append("g")
+                       .attr("class", "bubble")
+                       .selectAll("circle")
+                       .data(data.sort(function(a, b) {
+                         return b.Overall - a.Overall;
+                       }))
+                       .enter().append("circle")
+                       .style("stroke", "black")
+                       .style("opacity", .7)
+                       .style("fill", colorScale(0.5))
+                       .attr("r", 6.5)
+                       .on("mouseover", function(d) {
+                         div.transition()
+                            .duration(200)
+                            .style("opacity", 0.9);
+                         div.html("<b>" + d.Station_Name + "</b>")
+                            .style("left", (d3.event.pageX) + "px")
+                            .style("top", (d3.event.pageY - 37) + "px");
+                         })
+                       .on("mouseout", function(d) {
+                         div.transition()
+                            .duration(400)
+                            .style("opacity", 0);
+                       });
 
-	    	var inputs = ["Overall", "Weekday", "Weekend"];
+      /* Ensure bubbles remain on viewreset (e.g. when increasing zoom) */
+      // Adapted from http://bl.ocks.org/d3noob/9267535
+      map.on("viewreset", update);
+      update();
 
-	    	// Adapted from Udacity lesson code
-	    	var buttons = d3.select("body")
-	                    	.append("div")
-	                    	.attr("class", "input_buttons")
-	                   		.selectAll("div")
-	                    	.data(inputs)
-	                			.enter()
-	                    	.append("div")
-	                    	.text(function(d) {
-			                    	return d;
-	                    	});
+      function update() {
+        feature.attr("transform", function(d) {
+          return "translate("+ 
+            map.latLngToLayerPoint(d.LatLng).x +","+ 
+            map.latLngToLayerPoint(d.LatLng).y +")";
+        })
+      };
 
-	      buttons.on("click", function(d) {
-	        	d3.select(".input_buttons")
-	          	.selectAll("div")
-		          .transition()
-		          .duration(400)
-		          .style("color", "black")
-		          .style("background", "#fff");
+      /* Update bubbles and tooltips with buttons */
+      function update_points(input) {
+        feature.transition()
+               .duration(500)
+               .style("fill", function(d) {
+                 return colorScale(c(d[input]));
+               })
+               .attr("r", function(d) {
+                 return radius(d[input]);
+               });
 
-		       	d3.select(this)
-		          .transition()
-		          .duration(400)
-		          .style("background", "rgb(158,154,200)")
-		          .style("color", "white");
-	        	update_points(d);
-	      });
-		};	 
-	</script>
+        feature.on("mouseover", function(d) {
+          div.transition()
+             .duration(200)
+             .style("opacity", 0.9);
+          div.html("<b>" + d.Station_Name + "</b><br>" +
+                   "<i>Avg. daily hires: " + d3.format(".1f")(d[input]) + 
+                   "</i>")
+             .style("left", (d3.event.pageX) + "px")
+             .style("top", (d3.event.pageY - 37) + "px");
+        })
+               .on("mouseout", function(d) {
+                 div.transition()
+                    .duration(400)
+                    .style("opacity", 0);
+	        	   });
+      };
+
+      var inputs = ["Overall", "Weekday", "Weekend"];
+
+      // Adapted from Udacity lesson code
+      var buttons = d3.select("body")
+                      .append("div")
+                      .attr("class", "input_buttons")
+                      .selectAll("div")
+                      .data(inputs)
+                      .enter()
+                      .append("div")
+                      .text(function(d) {
+                        return d;
+                      });
+
+      buttons.on("click", function(d) {
+        d3.select(".input_buttons")
+          .selectAll("div")
+          .transition()
+          .duration(400)
+          .style("color", "black")
+          .style("background", "#fff");
+
+        d3.select(this)
+          .transition()
+          .duration(400)
+          .style("background", "rgb(158,154,200)")
+          .style("color", "white");
+        update_points(d);
+      });
+    };
+  </script>
 </head>
 <body>
-	<script type="text/javascript">
-		/* Load data, parse latitude/longitude and run plot_points function */
-		d3.csv("March_Cycle_Hire_Summary.csv", function(d) {
-				d.LatLng = new L.LatLng(d.Station_Lat, d.Station_Lon);
-				return d;
-		}, plot_points);
-	</script>
+  <script type="text/javascript">
+    /* Load data, parse latitude/longitude and run plot_points function */
+    d3.csv("March_Cycle_Hire_Summary.csv", function(d) {
+      d.LatLng = new L.LatLng(d.Station_Lat, d.Station_Lon);
+      return d;
+    }, plot_points);
+  </script>
 </body>
 </html>

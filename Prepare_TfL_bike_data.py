@@ -13,8 +13,8 @@ import pandas as pd
 from datetime import datetime
 
 # Get all bike points from TfL API
-app_id = "insert app_id"
-app_key = "insert app_key"
+app_id = "f49aabef"
+app_key = "740a84c9b887a6ae4de325a3d32ac795"
 params = {'app_id': app_id, 'app_key': app_key}
 r = requests.get('https://api.tfl.gov.uk/BikePoint', params=params)
 bike_points = r.json()
@@ -27,6 +27,9 @@ for point in bike_points:
     row['id'] = point['id'][(point['id'].find('_')+1):]
     row['lat'] = point['lat']
     row['lon'] = point['lon']
+    for e in point['additionalProperties']:
+        if e['key'] == 'NbDocks':
+            row['docks'] = int(e['value'])
     res.append(row)
 res_df = pd.DataFrame(res)
 
@@ -45,30 +48,16 @@ hire_df = pd.concat([hire_df1, hire_df2, hire_df3, hire_df4], ignore_index=True)
 hire_df['StartStation Id'] = hire_df['StartStation Id'].apply(int).apply(str)
 hire_df['EndStation Id'] = hire_df['EndStation Id'].apply(int).apply(str)
 
-# Merge with start station locations
-loc_df = res_df[['id', 'lat', 'lon']]
-hire_df_merged = pd.merge(hire_df, loc_df, left_on='StartStation Id', 
-                          right_on='id', how ='left')\
-                   .rename(columns={'Rental Id': 'Rental_Id', 
+# Remove missing values
+hire_df_cleaned = hire_df.dropna(axis=0, how='any')\
+                         .rename(columns={'Rental Id': 'Rental_Id', 
                                     'Bike Id': 'Bike_Id', 
                                     'End Date': 'End_Date', 
                                     'EndStation Id': 'EndStation_Id',
                                     'EndStation Name': 'EndStation_Name', 
                                     'Start Date': 'Start_Date', 
                                     'StartStation Id': 'StartStation_Id', 
-                                    'StartStation Name': 'StartStation_Name', 
-                                    'id': 'Start_Id', 
-                                    'lat': 'StartStation_Lat', 
-                                    'lon': 'StartStation_Lon'})
-
-# Merge with end station locations (ultimately not used for this analysis)
-hire_df_merged = pd.merge(hire_df_merged, loc_df, 
-                          left_on='EndStation_Id', right_on='id', how ='left')\
-                   .rename(columns={'id': 'End_Id', 'lat': 'EndStation_Lat', 
-                                    'lon': 'EndStation_Lon'})
-
-# Remove missing values
-hire_df_merged = hire_df_merged.dropna(axis=0, how='any')
+                                    'StartStation Name': 'StartStation_Name'})
 
 # Convert start date to datetime
 def clean_date(x):
@@ -77,14 +66,14 @@ def clean_date(x):
         x = x[:pos] + '/2017' + x[(pos + 3):]
     return x
     
-hire_df_merged['Start_Date'] = hire_df_merged['Start_Date'].apply(clean_date)
-hire_df_merged['Start_Date'] = hire_df_merged['Start_Date'].apply(lambda x: \
+hire_df_cleaned['Start_Date'] = hire_df_cleaned['Start_Date'].apply(clean_date)
+hire_df_cleaned['Start_Date'] = hire_df_cleaned['Start_Date'].apply(lambda x: \
                                   datetime.strptime(x, '%d/%m/%Y %H:%M'))
-
+                                  
 # Add Weekday and Weekend columns
-hire_df_merged['Weekday'] = hire_df_merged['Start_Date']\
+hire_df_cleaned['Weekday'] = hire_df_cleaned['Start_Date']\
                                 .apply(datetime.isoweekday)
-hire_df_merged['Weekend'] = hire_df_merged['Start_Date']\
+hire_df_cleaned['Weekend'] = hire_df_cleaned['Start_Date']\
                                 .apply(datetime.isoweekday)
 def weekday(x):
     if x < 6:
@@ -98,11 +87,11 @@ def weekend(x):
     else:
         return 0
     
-hire_df_merged['Weekday'] = hire_df_merged['Weekday'].apply(weekday)
-hire_df_merged['Weekend'] = hire_df_merged['Weekend'].apply(weekend)
+hire_df_cleaned['Weekday'] = hire_df_cleaned['Weekday'].apply(weekday)
+hire_df_cleaned['Weekend'] = hire_df_cleaned['Weekend'].apply(weekend)
 
 # Create summary data by station
-gb_start = hire_df_merged.groupby('StartStation_Id', as_index=False)
+gb_start = hire_df_cleaned.groupby('StartStation_Id', as_index=False)
 gb_station = pd.concat([gb_start.count()[['StartStation_Id', 'Rental_Id']],
                         gb_start.sum()[['Weekday', 'Weekend']]], axis=1)\
              .rename(columns={'Rental_Id': 'Total'})
@@ -113,16 +102,17 @@ gb_station['Weekday'] = gb_station['Weekday'] / 20
 gb_station['Weekend'] = gb_station['Weekend'] / 8
 
 # Merge with location data and drop surplus columns
-loc_df = res_df[['id', 'lat', 'lon', 'name']]
-gb_station = pd.merge(gb_station, loc_df, left_on='StartStation_Id', 
-                      right_on='id', how ='left')\
+gb_station = pd.merge(gb_station, res_df, left_on='StartStation_Id', 
+                      right_on='id', how ='inner')\
                .drop('id', 1)\
                .rename(columns={'StartStation_Id': 'Station_Id',
                                 'lat': 'Station_Lat',
                                 'lon': 'Station_Lon',
-                                'name': 'Station_Name'})
+                                'name': 'Station_Name',
+                                'docks': 'Station_Docks'})
 gb_station = gb_station[['Station_Id', 'Station_Name', 'Station_Lat', 
-                         'Station_Lon', 'Total', 'Weekday', 'Weekend']]
+                         'Station_Lon', 'Station_Docks', 'Total', 'Weekday', 
+                         'Weekend']]
 
 # Remove spaces before commas in station names
 def clean_station_names(x):
@@ -131,8 +121,7 @@ def clean_station_names(x):
         x = x[:pos] + ',' + x[(pos+2):]
     return x
 
-gb_station['Station_Name'] = gb_station['Station_Name']\
-    .apply(clean_station_names)
+gb_station['Station_Name'] = gb_station['Station_Name']    .apply(clean_station_names)
 
 # Export to CSV
 gb_station.to_csv('March_Cycle_Hire_Summary.csv', index=False, 

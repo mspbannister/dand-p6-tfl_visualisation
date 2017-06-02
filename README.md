@@ -34,7 +34,7 @@ Rather than include a legend, which can be difficult to interpret accurately for
 As part of the development process, I solicited feedback from friends and family on my evolving visualisation. This is documented below.
 
 1. "This looks ok, but have you thought about using colour to illustrate the different number of hires? It might be clearer than just changing the bubble size."
-2. "I don't like the colour scheme; I think the red is really aggressive. It sort of puts me off wanting to explore the graphic further."
+2. "I don't like the colour scheme; I think the red is really aggressive. It sort of puts me off wanting to explore the graphic further. Have you experimented with any alternatives?"
 3. "When I hover the mouse over these buttons, the cursor style implies that there is text underneath, not an object to be clicked. Can you change this to make it more obvious to users that this is an interactive feature?"
 
 ## Conclusion

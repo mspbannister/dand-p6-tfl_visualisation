@@ -94,10 +94,10 @@ hire_df_cleaned['Weekend'] = hire_df_cleaned['Weekend'].apply(weekend)
 gb_start = hire_df_cleaned.groupby('StartStation_Id', as_index=False)
 gb_station = pd.concat([gb_start.count()[['StartStation_Id', 'Rental_Id']],
                         gb_start.sum()[['Weekday', 'Weekend']]], axis=1)\
-             .rename(columns={'Rental_Id': 'Total'})
+             .rename(columns={'Rental_Id': 'Overall'})
 
 # Convert to daily averages
-gb_station['Total'] = gb_station['Total'] / 28
+gb_station['Overall'] = gb_station['Overall'] / 28
 gb_station['Weekday'] = gb_station['Weekday'] / 20
 gb_station['Weekend'] = gb_station['Weekend'] / 8
 
@@ -111,7 +111,7 @@ gb_station = pd.merge(gb_station, res_df, left_on='StartStation_Id',
                                 'name': 'Station_Name',
                                 'docks': 'Station_Docks'})
 gb_station = gb_station[['Station_Id', 'Station_Name', 'Station_Lat', 
-                         'Station_Lon', 'Station_Docks', 'Total', 'Weekday', 
+                         'Station_Lon', 'Station_Docks', 'Overall', 'Weekday', 
                          'Weekend']]
 
 # Remove spaces before commas in station names

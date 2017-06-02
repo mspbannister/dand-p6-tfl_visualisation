@@ -20,10 +20,10 @@
     }
 
     p {
-    	margin-left: auto;
-    	margin-right: auto;
-    	margin-bottom: 15px;
-    	text-align: center;
+      margin-left: auto;
+      margin-right: auto;
+      margin-bottom: 15px;
+      text-align: center;
       color: black;
       font: 14px sans-serif;
     }
@@ -33,34 +33,34 @@
     }
 
     div.tooltip {
-	    position: absolute;
-	    text-align: center;
-	    width: 125px;
-	    min-height: 28px;
-	    max-height: 80px;
-	    padding: 2px;
-	    font: 12px sans-serif;
-	    background: lightsteelblue;
-	    border: 1px black;
-	    border-radius: 8px;
-	    pointer-events: none;
-		}
+      position: absolute;
+      text-align: center;
+      width: 125px;
+      min-height: 28px;
+      max-height: 80px;
+      padding: 2px;
+      font: 12px sans-serif;
+      background: lightsteelblue;
+      border: 1px black;
+      border-radius: 8px;
+      pointer-events: none;
+    }
 
-		div.input_buttons {
-	    position: absolute;
-	    top: 140px;
-	    left: 1210px;
+    div.input_buttons {
+      position: absolute;
+      top: 140px;
+      left: 1210px;
     }
 
     div.input_buttons div {
-	    text-align: center;
-	    font: 13px sans-serif;
-	    border: 1px solid #ccc;
-	    border-radius: 4px;
-	    cursor: pointer;
-	    background: #fff;
-	    padding: 4px;
-	    margin: 0px;
+      text-align: center;
+      font: 13px sans-serif;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      cursor: pointer;
+      background: #fff;
+      padding: 4px;
+      margin: 0px;
     }
   </style>
 
@@ -84,14 +84,14 @@
     // Adapted from http://bl.ocks.org/d3noob/9267535
     var map = L.map("map").setView([51.51, -0.11], 12);
     mapLink = 
-	      '<a href="http://openstreetmap.org">OpenStreetMap</a>';
+      '<a href="http://openstreetmap.org">OpenStreetMap</a>';
     L.tileLayer(
-        "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: "&copy; " + mapLink + " Contributors; Powered " +
-          "by TfL Open Data; Contains OS data &copy; " +
-          "Crown copyright and database rights 2016",
-        maxZoom: 18,
-        }).addTo(map);
+      "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "&copy; " + mapLink + " Contributors; Powered " +
+        "by TfL Open Data; Contains OS data &copy; " +
+        "Crown copyright and database rights 2016",
+      maxZoom: 18,
+      }).addTo(map);
 
     /* Initialize the SVG layer */
     // Adapted from http://bl.ocks.org/d3noob/9267535
@@ -108,7 +108,7 @@
     function plot_points(data) {
 
       var count_extent = d3.extent(data, function(d) {
-		    return d.Overall;
+        return d.Overall;
       })
 
       var colorScale = d3.scaleSequential(d3.interpolatePurples);
@@ -144,7 +144,7 @@
                                   " bikes</i>")
                             .style("left", (d3.event.pageX) + "px")
                             .style("top", (d3.event.pageY - 37) + "px");
-                         })
+                       })
                        .on("mouseout", function(d) {
                          div.transition()
                             .duration(400)
@@ -159,7 +159,7 @@
       function update() {
         feature.attr("transform", function(d) {
           return "translate("+ 
-            map.latLngToLayerPoint(d.LatLng).x +","+ 
+            map.latLngToLayerPoint(d.LatLng).x +","+
             map.latLngToLayerPoint(d.LatLng).y +")";
         })
       };
@@ -180,8 +180,8 @@
              .duration(200)
              .style("opacity", 0.9);
           div.html("<b>" + d.Station_Name + "</b><br>" +
-                   "<i>Capacity: " + d.Station_Docks + 
-                   " bikes<br>" + "Avg. daily hires: " + 
+                   "<i>Capacity: " + d.Station_Docks +
+                   " bikes<br>" + "Avg. daily hires: " +
                    d3.format(".1f")(d[input]) + 
                    "</i>")
              .style("left", (d3.event.pageX) + "px")
@@ -191,7 +191,7 @@
                  div.transition()
                     .duration(400)
                     .style("opacity", 0);
-	        	   });
+               });
       };
 
       var inputs = ["Overall", "Weekday", "Weekend"];
@@ -215,7 +215,6 @@
           .duration(400)
           .style("color", "black")
           .style("background", "#fff");
-
         d3.select(this)
           .transition()
           .duration(400)

@@ -19,6 +19,15 @@
       font: 24px sans-serif;
     }
 
+    p {
+    	margin-left: auto;
+    	margin-right: auto;
+    	margin-bottom: 15px;
+    	text-align: center;
+      color: black;
+      font: 14px sans-serif;
+    }
+
     #map {
       margin: auto;
     }
@@ -39,7 +48,7 @@
 
 		div.input_buttons {
 	    position: absolute;
-	    top: 77px;
+	    top: 140px;
 	    left: 1210px;
     }
 
@@ -57,7 +66,18 @@
 
   <h2>London Cycle Hire Stations by Average Daily Hires</h2>
 
-  <div id="map" style="width: 1125px; height: 700px"></div>
+  <p style="width: 1000px;">
+  <i>An interactive map of every station in 
+  <a href="https://tfl.gov.uk/modes/cycling/santander-cycles" target="_blank">
+  London's cycle hire scheme</a>. The average daily hires for each station are visualised using marker size and colour, and can be viewed on a weekday, 
+  weekend, or overall basis using the buttons provided. The data covers the 
+  period 1-28 March 2017, and was collected from 
+  <a href="https://api.tfl.gov.uk" target="_blank">https://api.tfl.gov.uk</a> 
+  and <a href="http://cycling.data.tfl.gov.uk" target="_blank">
+  http://cycling.data.tfl.gov.uk</a>.
+  </i></p>
+
+  <div id="map" style="width: 1125px; height: 620px"></div>
 
   <script type="text/javascript">
     /* Set map using Leaflet, including coordinates and zoom */
@@ -120,8 +140,8 @@
                             .duration(200)
                             .style("opacity", 0.9);
                          div.html("<b>" + d.Station_Name + "</b><br>" +
-                           "<i>Capacity: " + d.Station_Docks + 
-                           " bikes</i>")
+                                  "<i>Capacity: " + d.Station_Docks + 
+                                  " bikes</i>")
                             .style("left", (d3.event.pageX) + "px")
                             .style("top", (d3.event.pageY - 37) + "px");
                          })

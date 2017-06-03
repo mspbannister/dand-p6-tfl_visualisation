@@ -13,8 +13,8 @@ import pandas as pd
 from datetime import datetime
 
 # Get all bike points from TfL API
-app_id = "f49aabef"
-app_key = "740a84c9b887a6ae4de325a3d32ac795"
+app_id = "app_id_here"
+app_key = "app_key_here"
 params = {'app_id': app_id, 'app_key': app_key}
 r = requests.get('https://api.tfl.gov.uk/BikePoint', params=params)
 bike_points = r.json()
